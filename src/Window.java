@@ -30,6 +30,7 @@ import java.awt.Checkbox;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import java.awt.Insets;
 import java.awt.Color;
@@ -73,18 +74,7 @@ public class Window {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Window window = new Window();
-					window.frmLmf.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	/**
 	 * Create the application.
@@ -96,6 +86,7 @@ public class Window {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	
 	private void initialize() {
 		frmLmf = new JFrame();
 		frmLmf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -264,6 +255,7 @@ public class Window {
 		
 				JButton btnL = new JButton("L5");
 				panel_9.add(btnL);
+			
 		
 
 		JPanel panel_13 = new JPanel();
@@ -289,6 +281,7 @@ public class Window {
 
 		JButton btnL_3 = new JButton("L2");
 		panel_15.add(btnL_3);
+
 
 		JPanel panel_16 = new JPanel();
 		panel_16.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -412,6 +405,7 @@ public class Window {
 		JButton btnRightpalm = new JButton("Right_Palm");
 		panel_12.add(btnRightpalm);
 		
+				
 		panel_9.add(new LoadImageApp());
 		panel_13.add(new LoadImageApp());
 		panel_14.add(new LoadImageApp());
@@ -424,6 +418,10 @@ public class Window {
 		panel_20.add(new LoadImageApp());
 		panel_21.add(new LoadImageApp());
 		
+	}
+
+	public JFrame getFrmLmf() {
+		return frmLmf;
 	}
 
 	private static void addPopup(Component component, final JPopupMenu popup) {
