@@ -1,27 +1,24 @@
-import java.awt.EventQueue;
+import java.sql.SQLException;
 
 public class Main {
 
 	public static void main(String[] args) {
+			
+//		Window window = new Window();		
+//		window.createWindow();
 		
+		JDBCPreparedStatementInsertExample connection = new JDBCPreparedStatementInsertExample();
 		
-		Window window = new Window();
-		createWindow();
-		DBConnect connect = new DBConnect();
-	}
-	
-	public static void createWindow(){
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Window window = new Window();
-					window.getFrmLmf().setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		try {
 
+			connection.insertRecordIntoTable();
+
+		} catch (SQLException e) {
+
+			System.out.println(e.getMessage());
+
+		}
+		
 	}
 
 }

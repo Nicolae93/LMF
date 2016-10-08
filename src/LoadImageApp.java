@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
@@ -48,14 +49,17 @@ public class LoadImageApp extends Component {
 		g.drawImage(img, 0, 0, null);
 	}
 
-	public LoadImageApp() {
+	public LoadImageApp(String URL, int width, int height) {
+		
 		try {
-			img = ImageIO.read(new File("/Users/dexter/Documents/workspace/LMF_Project/FingerPrint.PNG"));
+			//carica immagine da file system
+			img = ImageIO.read(new File(URL));
 		} catch (IOException e) {
 		}
-
-		img = resize(img, 85, 150);
+		//ridimensiona immagine
+		img = resize(img, width, height);
 	}
+	
 
 	public static BufferedImage resize(BufferedImage img, int newW, int newH) {
 		Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
@@ -67,28 +71,4 @@ public class LoadImageApp extends Component {
 
 		return dimg;
 	}
-	
-
-	// public Dimension getPreferredSize() {
-	// if (img == null) {
-	// return new Dimension(100,100);
-	// } else {
-	// return new Dimension(img.getWidth(null), img.getHeight(null));
-	// }
-	// }
-
-	// public static void main(String[] args) {
-	//
-	// JFrame f = new JFrame("Load Image Sample");
-	//
-	// f.addWindowListener(new WindowAdapter(){
-	// public void windowClosing(WindowEvent e) {
-	// System.exit(0);
-	// }
-	// });
-	//
-	// f.add(new LoadImageApp());
-	// f.pack();
-	// f.setVisible(true);
-	// }
 }
