@@ -15,6 +15,8 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
+
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JLayeredPane;
@@ -64,14 +66,16 @@ import java.awt.event.ActionEvent;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.PlainDocument;
 import javax.swing.Box;
+import javax.swing.JComboBox;
 
 public class Window {
 
 	private JFrame frmLmf, frmLmf1;
 	private JTextField txtId;
 	private JTextField txtInsertAge;
-	private JTextField txtInsertNationality;
 	BufferedImage img;
 	private JTextField txtInsertName;
 	private JTextField txtInsertLastname;
@@ -150,12 +154,15 @@ public class Window {
 
 		JButton btnSearch = new JButton("Search");
 		panel_1.add(btnSearch);
+		
+		JLabel lblId = new JLabel("ID:");
+		panel_1.add(lblId);
 
 		txtId = new JTextField();
-		txtId.setText("ID:");
-		txtId.setToolTipText("");
 		panel_1.add(txtId);
 		txtId.setColumns(10);
+		PlainDocument doc = (PlainDocument) txtId.getDocument();
+		doc.setDocumentFilter(new IntFilter(5));
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -176,7 +183,7 @@ public class Window {
 		panel_2.add(lblName_1, gbc_lblName_1);
 
 		txtInsertName = new JTextField();
-		txtInsertName.setText("Insert name");
+		((AbstractDocument) txtInsertName.getDocument()).setDocumentFilter(new MyDocumentFilter());
 
 		GridBagConstraints gbc_txtInsertName = new GridBagConstraints();
 		gbc_txtInsertName.insets = new Insets(0, 0, 5, 5);
@@ -195,7 +202,7 @@ public class Window {
 		panel_2.add(lblLname, gbc_lblLname);
 
 		txtInsertLastname = new JTextField();
-		txtInsertLastname.setText("Insert lastname");
+		((AbstractDocument) txtInsertLastname.getDocument()).setDocumentFilter(new MyDocumentFilter());
 		GridBagConstraints gbc_txtInsertLastname = new GridBagConstraints();
 		gbc_txtInsertLastname.insets = new Insets(0, 0, 5, 5);
 		gbc_txtInsertLastname.fill = GridBagConstraints.HORIZONTAL;
@@ -235,7 +242,9 @@ public class Window {
 		panel_2.add(lblAge, gbc_lblAge);
 
 		txtInsertAge = new JTextField();
-		txtInsertAge.setText("Insert age");
+		PlainDocument doc1 = (PlainDocument) txtInsertAge.getDocument();
+		doc1.setDocumentFilter(new IntFilter(2));
+		
 		GridBagConstraints gbc_txtInsertAge = new GridBagConstraints();
 		gbc_txtInsertAge.insets = new Insets(0, 0, 5, 5);
 		gbc_txtInsertAge.fill = GridBagConstraints.HORIZONTAL;
@@ -251,16 +260,16 @@ public class Window {
 		gbc_lblNat.gridx = 0;
 		gbc_lblNat.gridy = 4;
 		panel_2.add(lblNat, gbc_lblNat);
-
-		txtInsertNationality = new JTextField();
-		txtInsertNationality.setText("Insert nationality");
-		GridBagConstraints gbc_txtInsertNationality = new GridBagConstraints();
-		gbc_txtInsertNationality.insets = new Insets(0, 0, 5, 5);
-		gbc_txtInsertNationality.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtInsertNationality.gridx = 1;
-		gbc_txtInsertNationality.gridy = 4;
-		panel_2.add(txtInsertNationality, gbc_txtInsertNationality);
-		txtInsertNationality.setColumns(10);
+		
+		JComboBox comboBox = new JComboBox(Locale.getISOCountries());
+		
+		
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.gridx = 1;
+		gbc_comboBox.gridy = 4;
+		panel_2.add(comboBox, gbc_comboBox);
 
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -602,8 +611,8 @@ public class Window {
 //		 panel_20.add(new LoadImageApp(URLFingerPrint,85,150));
 //		 panel_21.add(new LoadImageApp(URLFingerPrint,85,150));
 		 
-		// String URLFingerPrint="/Users/dexter/Documents/workspace/LMF_Project/fingerPrint.jpg";
-		 String URLFingerPrint="/Users/dexter/Documents/workspace/LMF_Project/empty.png";
+		 String URLFingerPrint="/Users/dexter/Documents/workspace/LMF_Project/fingerPrint.jpg";
+		 //String URLFingerPrint="/Users/dexter/Documents/workspace/LMF_Project/empty.png";
 		 panel_9.add(new LoadImageApp(URLFingerPrint,85,100));
 		 panel_13.add(new LoadImageApp(URLFingerPrint,85,100));
 		 panel_14.add(new LoadImageApp(URLFingerPrint,85,100));
