@@ -29,7 +29,10 @@ import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Vector;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
@@ -53,13 +56,15 @@ public class JDialogWindow extends JDialog {
 	private JLabel lblSex;
 	private JLabel lblEmail;
 	private JLabel lblNationality;
-	private JComboBox comboBox;
+	private JComboBox comboBoxNat;
 	private JLabel lblAddImg;
 	private JLabel label_1;
 	private JLabel label;
 	private JRadioButton rdbtnMale;
 	private JRadioButton rdbtnFemale;
-
+	private Path saveDir = Paths.get("/Users/dexter/Documents/LMF/scans/imag.tif");
+	File[] filePathImgToMove;
+	
 	/**
 	 * Create the dialog.
 	 */
@@ -131,8 +136,18 @@ public class JDialogWindow extends JDialog {
 				panel.add(lblNationality, "cell 0 5,alignx trailing");
 			}
 			{
-				comboBox = new JComboBox(Locale.getISOCountries());
-				panel.add(comboBox, "cell 1 5,growx");
+				Vector<String> v = new Vector<String>();
+				Locale[] locales = Locale.getAvailableLocales();
+				for (Locale locale : locales) {
+					// String iso = locale.getISO3Country();
+					// String code = locale.getCountry();
+					String name = locale.getDisplayCountry();
+					if (!v.contains(name))
+						v.addElement(name);
+				}
+				Collections.sort(v);
+				comboBoxNat = new JComboBox(v);
+				panel.add(comboBoxNat, "cell 1 5,growx");
 			}
 			{
 				lblAddImg = new JLabel("Images:");
@@ -148,34 +163,15 @@ public class JDialogWindow extends JDialog {
 					// START CHOOSER
 					JFileChooser chooser = new JFileChooser();
 					chooser.setMultiSelectionEnabled(true);
-					chooser.setCurrentDirectory(new java.io.File("."));
-					chooser.setDialogTitle("choosertitle");
+					//chooser.setCurrentDirectory(new java.io.File("."));
+					chooser.setDialogTitle("Select images");
 					chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 					chooser.setAcceptAllFileFilterUsed(false);
 
 					if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-						File[] pathBigImagesArray;
-						Path newdir = Paths.get("/Users/dexter/Documents/workspace/LMF_Project/imagine.png");
-						pathBigImagesArray = chooser.getSelectedFiles();
-						System.out.println(pathBigImagesArray[0]);
-
-						try {
-							Files.copy(pathBigImagesArray[0].toPath(), newdir, StandardCopyOption.REPLACE_EXISTING);
-						} catch (FileAlreadyExistsException e1) {
-							// destination file already exists
-						} catch (IOException e1) {
-							// something else went wrong
-							e1.printStackTrace();
-						}
-
-						// source is in pathBigImagesArray[i]
-						// for (int i = 0; i < pathBigImagesArray.length;
-						// i++) {
-						// System.out.println("getSelectedFile() : " +
-						// pathBigImagesArray[i]);
-						// Files.move(pathBigImagesArray[i],
-						// newdir.resolve(pathBigImagesArray[i].getFileName()));
-						// }
+						
+						filePathImgToMove = chooser.getSelectedFiles(); // filePathImgToMove have all the paths selected from chooser
+						
 					} else {
 						System.out.println("No Selection ");
 					}
@@ -233,7 +229,7 @@ public class JDialogWindow extends JDialog {
 			}
 			panel.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[] { lblName, txtInsertName,
 					lblSurname, txtInsertSurname, lblBirthDate, txtDD, lblSex, lblEmail, txtInsertEmail, lblNationality,
-					comboBox, lblAddImg, btnNewButton, label_1, txtMm, label, txtYyyy, rdbtnMale, rdbtnFemale }));
+					comboBoxNat, lblAddImg, btnNewButton, label_1, txtMm, label, txtYyyy, rdbtnMale, rdbtnFemale }));
 			{
 			}
 		}
@@ -242,80 +238,79 @@ public class JDialogWindow extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Save");
-				okButton.setEnabled(false);
+				JButton saveButton = new JButton("Save");
+				saveButton.setEnabled(true);
 				
-				
-				
-//				boolean flag = false;
-//				arrayInfoPerson = new String[7];
-//				do {
-//					if (txtInsertName.getText().equals("") || txtInsertSurname.getText().equals("")
-//							|| txtDD.getText().length() != 2 || txtMm.getText().length() != 2
-//							|| txtYyyy.getText().length() != 4
-//							|| (!rdbtnMale.isSelected() && !rdbtnFemale.isSelected())) {
-//						flag = true;
-//					} else {
-//						okButton.setEnabled(true);
-//						flag = false;
-//					}
-//				} while (flag);
-				
-				
-
-				okButton.addActionListener(new ActionListener() {
-
+				saveButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						
-						System.out.println("bottone premuto");
-//						arrayInfoPerson = new String[7];
-//						boolean flag = false;
-//						
-//						do {
-//							if (txtInsertName.getText().equals("") || txtInsertSurname.getText().equals("")
-//									|| txtDD.getText().length() != 2 || txtMm.getText().length() != 2
-//									|| txtYyyy.getText().length() != 4
-//									|| (!rdbtnMale.isSelected() && !rdbtnFemale.isSelected())) {
-//								flag = true;
-//							} else {
-//								arrayInfoPerson[0] = txtInsertName.getText().trim();
-//								arrayInfoPerson[1] = txtInsertSurname.getText().trim();
-//								arrayInfoPerson[2] = txtYyyy.getText().trim() + "-" + txtMm.getText().trim() + "-"
-//										+ txtDD.getText().trim();
-//								// M or F
-//								if (rdbtnMale.isSelected()) {
-//									arrayInfoPerson[3] = "M";
-//									flag = false;
-//								} else if (rdbtnFemale.isSelected()) {
-//									arrayInfoPerson[3] = "F";
-//									flag = false;
-//								} 
-//								arrayInfoPerson[4] = txtInsertEmail.getText().trim();
-//								System.out.println(comboBox.getSelectedItem());
-//								System.out.println((String)comboBox.getSelectedItem());
-//								arrayInfoPerson[5] = (String) comboBox.getSelectedItem();
-//							}
-//						} while (flag);
-//
-//						try {
-//							System.out.println(2);
-//							ConnectionDB connection = new ConnectionDB(new InsertRecordDB());
-//							connection.executeStrategy(arrayInfoPerson);
-//
-//							System.out.println(3);
-//						} catch (SQLException e1) {
-//							// TODO Auto-generated catch block
-//							e1.printStackTrace();
-//						}
+
+							System.out.println("bottone premuto");
+							arrayInfoPerson = new String[7];
+							
+							// TODO incorect input if year is 4346 
+							if (txtInsertName.getText().trim().equals("") || txtInsertSurname.getText().trim().equals("")
+									|| txtDD.getText().length() != 2 || txtMm.getText().length() != 2
+									|| txtYyyy.getText().length() != 4 
+									|| (!rdbtnMale.isSelected() && !rdbtnFemale.isSelected()) || comboBoxNat.getSelectedItem().equals("") 
+									|| filePathImgToMove == null || Integer.parseInt(txtDD.getText()) < 0 && Integer.parseInt(txtDD.getText()) >= 31
+									|| Integer.parseInt(txtMm.getText()) < 0 && Integer.parseInt(txtMm.getText()) >= 12
+									|| Integer.parseInt(txtYyyy.getText()) < 0 && Integer.parseInt(txtMm.getText()) > Calendar.getInstance().get(Calendar.YEAR)) {
+								
+								//Messaggio di errore insersione
+								JOptionPane.showMessageDialog (null, "Missing something", "Incorrect Input", JOptionPane.WARNING_MESSAGE);
+								//Crea un'altro JDialog
+								JDialogWindow dialog = new JDialogWindow();
+								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+								dialog.setVisible(true);
+								//chiudi JDialog
+								dispose(); 
+								
+							} else {
+								arrayInfoPerson[0] = txtInsertName.getText().trim(); // firstname
+								arrayInfoPerson[1] = txtInsertSurname.getText().trim(); // lastname
+								arrayInfoPerson[2] = txtYyyy.getText().trim() + "-" + txtMm.getText().trim() + "-" // bithdate
+										+ txtDD.getText().trim();
+								// M or F
+								if (rdbtnMale.isSelected()) { // sex
+									arrayInfoPerson[3] = "M";
+								} else if (rdbtnFemale.isSelected()) {
+									arrayInfoPerson[3] = "F";
+								}
+
+								arrayInfoPerson[4] = (String) comboBoxNat.getSelectedItem(); // nationality
+
+								arrayInfoPerson[5] = txtInsertEmail.getText().trim(); // e-mail
+
+								System.out.println(2);
+								ConnectionDB connection = new ConnectionDB(new InsertRecordDB());
+								try {
+									//connection to database and execute insertion
+									connection.executeStrategy(arrayInfoPerson, filePathImgToMove);
+									
+								} catch (SQLException e1) {
+									e1.printStackTrace();
+								} catch (IOException e1) {
+									e1.printStackTrace();
+								}
+								
+							}
+
+							System.out.println(3);
+
 					}
 				});
 
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+				saveButton.setActionCommand("OK");
+				buttonPane.add(saveButton);
+				getRootPane().setDefaultButton(saveButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}

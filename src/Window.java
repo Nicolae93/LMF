@@ -15,8 +15,9 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Locale;
-
+import java.util.Vector;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JLayeredPane;
@@ -76,10 +77,10 @@ public class Window {
 	private JFrame frmLmf, frmLmf1;
 	private JTextField txtId;
 	private JTextField txtInsertAge;
-	BufferedImage img;
+	private BufferedImage img;
 	private JTextField txtInsertName;
 	private JTextField txtInsertLastname;
-
+	private JCheckBox chckbxMale, chckbxFemale;
 	/**
 	 * Launch the application.
 	 */
@@ -218,7 +219,14 @@ public class Window {
 		gbc_lblSex.gridy = 2;
 		panel_2.add(lblSex, gbc_lblSex);
 
-		JCheckBox chckbxMale = new JCheckBox("Male");
+		chckbxMale = new JCheckBox("Male");
+		chckbxMale.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(chckbxMale.isSelected()){
+					chckbxFemale.setSelected(false);
+				}
+			}
+		});
 		chckbxMale.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_chckbxMale = new GridBagConstraints();
 		gbc_chckbxMale.insets = new Insets(0, 0, 5, 5);
@@ -226,7 +234,14 @@ public class Window {
 		gbc_chckbxMale.gridy = 2;
 		panel_2.add(chckbxMale, gbc_chckbxMale);
 
-		JCheckBox chckbxFemale = new JCheckBox("Female");
+		chckbxFemale = new JCheckBox("Female");
+		chckbxFemale.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(chckbxFemale.isSelected()){
+					chckbxMale.setSelected(false);
+				}
+			}
+		});
 		GridBagConstraints gbc_chckbxFemale = new GridBagConstraints();
 		gbc_chckbxFemale.insets = new Insets(0, 0, 5, 0);
 		gbc_chckbxFemale.gridx = 2;
@@ -261,7 +276,17 @@ public class Window {
 		gbc_lblNat.gridy = 4;
 		panel_2.add(lblNat, gbc_lblNat);
 		
-		JComboBox comboBox = new JComboBox(Locale.getISOCountries());
+		
+		 Vector<String> v = new Vector<String>();
+		  Locale[] locales = Locale.getAvailableLocales();
+		     for (Locale locale : locales) {
+		       //String iso = locale.getISO3Country();
+		       //String code = locale.getCountry();
+		       String name = locale.getDisplayCountry();
+		   if(!v.contains(name)) v.addElement(name);
+		   }
+		Collections.sort(v);
+		JComboBox comboBox = new JComboBox(v);
 		
 		
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
@@ -320,24 +345,13 @@ public class Window {
 		panel_9.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_7.add(panel_9);
 		panel_9.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		JPanel panel_28 = new JPanel();
-		panel_9.add(panel_28);
-		panel_28.setLayout(new GridLayout(1, 0, 0, 0));
-		
-		JPanel panel_33 = new JPanel();
-		panel_28.add(panel_33);
-		panel_33.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		JButton button_13 = new JButton("rmv");
-		panel_33.add(button_13);
 
 		JPanel panel_13 = new JPanel();
 		panel_13.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_7.add(panel_13);
 		panel_13.setLayout(new GridLayout(0, 1, 0, 0));
 
-		JButton btnL_1 = new JButton("add");
+		JButton btnL_1 = new JButton("L4");
 		panel_13.add(btnL_1);
 
 		JPanel panel_14 = new JPanel();
@@ -408,162 +422,6 @@ public class Window {
 		JButton button_4 = new JButton("R5");
 		panel_21.add(button_4);
 
-		JPanel panel_5 = new JPanel();
-		panel_5.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel_3.add(panel_5, BorderLayout.NORTH);
-		GridBagLayout gbl_panel_5 = new GridBagLayout();
-		gbl_panel_5.columnWidths = new int[] { 98, 31, 365, 109, 31, 155, 121, 0 };
-		gbl_panel_5.rowHeights = new int[] { 16, 16, 16, 16, 16, 16, 0 };
-		gbl_panel_5.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_panel_5.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		panel_5.setLayout(gbl_panel_5);
-
-		JLabel lblInformation = new JLabel("PERSON INFO");
-		GridBagConstraints gbc_lblInformation = new GridBagConstraints();
-		gbc_lblInformation.gridwidth = 2;
-		gbc_lblInformation.insets = new Insets(0, 0, 5, 5);
-		gbc_lblInformation.gridx = 0;
-		gbc_lblInformation.gridy = 0;
-		panel_5.add(lblInformation, gbc_lblInformation);
-		
-		JLabel lblFpInfo = new JLabel("FP INFO");
-		GridBagConstraints gbc_lblFpInfo = new GridBagConstraints();
-		gbc_lblFpInfo.insets = new Insets(0, 0, 5, 5);
-		gbc_lblFpInfo.gridx = 3;
-		gbc_lblFpInfo.gridy = 0;
-		panel_5.add(lblFpInfo, gbc_lblFpInfo);
-
-		JPanel panel_22 = new JPanel();
-		GridBagConstraints gbc_panel_22 = new GridBagConstraints();
-		gbc_panel_22.fill = GridBagConstraints.BOTH;
-		gbc_panel_22.gridheight = 6;
-		gbc_panel_22.gridx = 6;
-		gbc_panel_22.gridy = 0;
-		panel_5.add(panel_22, gbc_panel_22);
-		
-
-		panel_22.setLayout(new GridLayout(1, 0, 0, 0));
-
-		JLabel lblName = new JLabel("NAME:");
-		GridBagConstraints gbc_lblName = new GridBagConstraints();
-		gbc_lblName.insets = new Insets(0, 0, 5, 5);
-		gbc_lblName.gridx = 0;
-		gbc_lblName.gridy = 1;
-		panel_5.add(lblName, gbc_lblName);
-
-		JLabel lblNewLabel = new JLabel("none");
-		lblNewLabel.setEnabled(false);
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel.gridx = 1;
-		gbc_lblNewLabel.gridy = 1;
-		panel_5.add(lblNewLabel, gbc_lblNewLabel);
-
-		JLabel lblTypology = new JLabel("TYPOLOGY:");
-		GridBagConstraints gbc_lblTypology = new GridBagConstraints();
-		gbc_lblTypology.insets = new Insets(0, 0, 5, 5);
-		gbc_lblTypology.gridx = 3;
-		gbc_lblTypology.gridy = 1;
-		panel_5.add(lblTypology, gbc_lblTypology);
-
-		JLabel lblNone_1 = new JLabel("none");
-		lblNone_1.setEnabled(false);
-		GridBagConstraints gbc_lblNone_1 = new GridBagConstraints();
-		gbc_lblNone_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNone_1.gridx = 4;
-		gbc_lblNone_1.gridy = 1;
-		panel_5.add(lblNone_1, gbc_lblNone_1);
-
-		JLabel lblSurname_1 = new JLabel("SURNAME:");
-		GridBagConstraints gbc_lblSurname_1 = new GridBagConstraints();
-		gbc_lblSurname_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblSurname_1.gridx = 0;
-		gbc_lblSurname_1.gridy = 2;
-		panel_5.add(lblSurname_1, gbc_lblSurname_1);
-
-		JLabel lblNewLabel_1 = new JLabel("none");
-		lblNewLabel_1.setEnabled(false);
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_1.gridx = 1;
-		gbc_lblNewLabel_1.gridy = 2;
-		panel_5.add(lblNewLabel_1, gbc_lblNewLabel_1);
-
-		JLabel lblTriradiusCore = new JLabel("TRIRADIUS CORE:");
-		GridBagConstraints gbc_lblTriradiusCore = new GridBagConstraints();
-		gbc_lblTriradiusCore.insets = new Insets(0, 0, 5, 5);
-		gbc_lblTriradiusCore.gridx = 3;
-		gbc_lblTriradiusCore.gridy = 2;
-		panel_5.add(lblTriradiusCore, gbc_lblTriradiusCore);
-
-		JLabel lblNone_2 = new JLabel("none");
-		lblNone_2.setEnabled(false);
-		GridBagConstraints gbc_lblNone_2 = new GridBagConstraints();
-		gbc_lblNone_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNone_2.gridx = 4;
-		gbc_lblNone_2.gridy = 2;
-		panel_5.add(lblNone_2, gbc_lblNone_2);
-
-		JLabel lblSurname = new JLabel("NATIONALITY:");
-		GridBagConstraints gbc_lblSurname = new GridBagConstraints();
-		gbc_lblSurname.insets = new Insets(0, 0, 5, 5);
-		gbc_lblSurname.gridx = 0;
-		gbc_lblSurname.gridy = 3;
-		panel_5.add(lblSurname, gbc_lblSurname);
-
-		JLabel lblNewLabel_2 = new JLabel("none");
-		lblNewLabel_2.setEnabled(false);
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_2.gridx = 1;
-		gbc_lblNewLabel_2.gridy = 3;
-		panel_5.add(lblNewLabel_2, gbc_lblNewLabel_2);
-
-		JLabel lblNumerCore = new JLabel("NUMER CORE:");
-		GridBagConstraints gbc_lblNumerCore = new GridBagConstraints();
-		gbc_lblNumerCore.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNumerCore.gridx = 3;
-		gbc_lblNumerCore.gridy = 3;
-		panel_5.add(lblNumerCore, gbc_lblNumerCore);
-
-		JLabel lblNone_3 = new JLabel("none");
-		lblNone_3.setEnabled(false);
-		GridBagConstraints gbc_lblNone_3 = new GridBagConstraints();
-		gbc_lblNone_3.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNone_3.gridx = 4;
-		gbc_lblNone_3.gridy = 3;
-		panel_5.add(lblNone_3, gbc_lblNone_3);
-
-		JLabel lblSex_1 = new JLabel("SEX:");
-		GridBagConstraints gbc_lblSex_1 = new GridBagConstraints();
-		gbc_lblSex_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblSex_1.gridx = 0;
-		gbc_lblSex_1.gridy = 4;
-		panel_5.add(lblSex_1, gbc_lblSex_1);
-
-		JLabel lblNewLabel_3 = new JLabel("none");
-		lblNewLabel_3.setEnabled(false);
-		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_3.gridx = 1;
-		gbc_lblNewLabel_3.gridy = 4;
-		panel_5.add(lblNewLabel_3, gbc_lblNewLabel_3);
-
-		JLabel lblRidgeCount = new JLabel("RIDGE COUNT:");
-		GridBagConstraints gbc_lblRidgeCount = new GridBagConstraints();
-		gbc_lblRidgeCount.insets = new Insets(0, 0, 5, 5);
-		gbc_lblRidgeCount.gridx = 3;
-		gbc_lblRidgeCount.gridy = 4;
-		panel_5.add(lblRidgeCount, gbc_lblRidgeCount);
-
-		JLabel lblNone_4 = new JLabel("none");
-		lblNone_4.setEnabled(false);
-		GridBagConstraints gbc_lblNone_4 = new GridBagConstraints();
-		gbc_lblNone_4.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNone_4.gridx = 4;
-		gbc_lblNone_4.gridy = 4;
-		panel_5.add(lblNone_4, gbc_lblNone_4);
-
 		JPanel panel_10 = new JPanel();
 		panel_3.add(panel_10, BorderLayout.SOUTH);
 		panel_10.setLayout(new GridLayout(0, 2, 0, 0));
@@ -581,24 +439,10 @@ public class Window {
 
 		JButton btnRightpalm = new JButton("Right_Palm");
 		panel_12.add(btnRightpalm);
-
-		JLabel lblAge_1 = new JLabel("AGE:");
-		GridBagConstraints gbc_lblAge_1 = new GridBagConstraints();
-		gbc_lblAge_1.insets = new Insets(0, 0, 0, 5);
-		gbc_lblAge_1.gridx = 0;
-		gbc_lblAge_1.gridy = 5;
-		panel_5.add(lblAge_1, gbc_lblAge_1);
-
-		JLabel lblNone = new JLabel("none");
-		lblNone.setEnabled(false);
-		GridBagConstraints gbc_lblNone = new GridBagConstraints();
-		gbc_lblNone.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNone.gridx = 1;
-		gbc_lblNone.gridy = 5;
-		panel_5.add(lblNone, gbc_lblNone);
 		
 		String URLMU = "/Users/dexter/Documents/workspace/LMF_Project/masarykUniversity.png";
-		panel_22.add(new LoadImageApp(URLMU, 120, 120));
+		
+		
 
 //		 panel_9.add(new LoadImageApp(URLFingerPrint,85,150));
 //		 panel_13.add(new LoadImageApp(URLFingerPrint,85,150));
@@ -612,8 +456,12 @@ public class Window {
 //		 panel_21.add(new LoadImageApp(URLFingerPrint,85,150));
 		 
 		 String URLFingerPrint="/Users/dexter/Documents/workspace/LMF_Project/fingerPrint.jpg";
+		 JButton btnL = new JButton("L5");
+		
+		 panel_9.add(btnL);
 		 //String URLFingerPrint="/Users/dexter/Documents/workspace/LMF_Project/empty.png";
-		 panel_9.add(new LoadImageApp(URLFingerPrint,85,100));
+		 LoadImageApp loadImageApp = new LoadImageApp(URLFingerPrint,85,100);
+		 panel_9.add(loadImageApp);
 		 panel_13.add(new LoadImageApp(URLFingerPrint,85,100));
 		 panel_14.add(new LoadImageApp(URLFingerPrint,85,100));
 		 panel_15.add(new LoadImageApp(URLFingerPrint,85,100));
@@ -623,6 +471,213 @@ public class Window {
 		 panel_19.add(new LoadImageApp(URLFingerPrint,85,100));
 		 panel_20.add(new LoadImageApp(URLFingerPrint,85,100));
 		 panel_21.add(new LoadImageApp(URLFingerPrint,85,100));
+		 
+		 JPanel panel_5 = new JPanel();
+		 panel_3.add(panel_5, BorderLayout.NORTH);
+		 panel_5.setLayout(new BorderLayout(0, 0));
+		 
+		 JPanel panel_24 = new JPanel();
+		 panel_5.add(panel_24, BorderLayout.EAST);
+		 panel_24.setLayout(new BorderLayout(0, 0));
+		 //panel_24.add(new LoadImageApp(URLMU,50,50));
+		 
+		 JPanel panel_23 = new JPanel();
+		 panel_5.add(panel_23, BorderLayout.WEST);
+		 GridBagLayout gbl_panel_23 = new GridBagLayout();
+		 gbl_panel_23.columnWidths = new int[]{95, 79, 76, 26, 75, 29, 91, 50, 0};
+		 gbl_panel_23.rowHeights = new int[]{16, 0, 0, 0, 0, 0, 0, 0, 0};
+		 gbl_panel_23.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		 gbl_panel_23.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		 panel_23.setLayout(gbl_panel_23);
+		 
+		 JLabel lblInformation = new JLabel("INFORMATION:");
+		 GridBagConstraints gbc_lblInformation = new GridBagConstraints();
+		 gbc_lblInformation.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblInformation.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblInformation.gridx = 0;
+		 gbc_lblInformation.gridy = 0;
+		 panel_23.add(lblInformation, gbc_lblInformation);
+		 
+		 JLabel lblFirstName = new JLabel("FIRST NAME:");
+		 GridBagConstraints gbc_lblFirstName = new GridBagConstraints();
+		 gbc_lblFirstName.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblFirstName.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblFirstName.gridx = 0;
+		 gbc_lblFirstName.gridy = 1;
+		 panel_23.add(lblFirstName, gbc_lblFirstName);
+		 
+		 JLabel lblNone = new JLabel("none");
+		 GridBagConstraints gbc_lblNone = new GridBagConstraints();
+		 gbc_lblNone.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblNone.gridx = 1;
+		 gbc_lblNone.gridy = 1;
+		 panel_23.add(lblNone, gbc_lblNone);
+		 
+		 JLabel lblLastName = new JLabel("LAST NAME:");
+		 GridBagConstraints gbc_lblLastName = new GridBagConstraints();
+		 gbc_lblLastName.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblLastName.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblLastName.gridx = 0;
+		 gbc_lblLastName.gridy = 2;
+		 panel_23.add(lblLastName, gbc_lblLastName);
+		 
+		 JLabel lblNone_1 = new JLabel("none");
+		 GridBagConstraints gbc_lblNone_1 = new GridBagConstraints();
+		 gbc_lblNone_1.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblNone_1.gridx = 1;
+		 gbc_lblNone_1.gridy = 2;
+		 panel_23.add(lblNone_1, gbc_lblNone_1);
+		 
+		 JLabel lblSex_1 = new JLabel("SEX:");
+		 GridBagConstraints gbc_lblSex_1 = new GridBagConstraints();
+		 gbc_lblSex_1.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblSex_1.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblSex_1.gridx = 0;
+		 gbc_lblSex_1.gridy = 3;
+		 panel_23.add(lblSex_1, gbc_lblSex_1);
+		 
+		 JLabel lblNone_2 = new JLabel("none");
+		 GridBagConstraints gbc_lblNone_2 = new GridBagConstraints();
+		 gbc_lblNone_2.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblNone_2.gridx = 1;
+		 gbc_lblNone_2.gridy = 3;
+		 panel_23.add(lblNone_2, gbc_lblNone_2);
+		 
+		 JLabel lblBirthdate = new JLabel("BIRTHDATE:");
+		 GridBagConstraints gbc_lblBirthdate = new GridBagConstraints();
+		 gbc_lblBirthdate.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblBirthdate.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblBirthdate.gridx = 0;
+		 gbc_lblBirthdate.gridy = 4;
+		 panel_23.add(lblBirthdate, gbc_lblBirthdate);
+		 
+		 JLabel lblNone_3 = new JLabel("none");
+		 GridBagConstraints gbc_lblNone_3 = new GridBagConstraints();
+		 gbc_lblNone_3.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblNone_3.gridx = 1;
+		 gbc_lblNone_3.gridy = 4;
+		 panel_23.add(lblNone_3, gbc_lblNone_3);
+		 
+		 JLabel lblAge_1 = new JLabel("AGE:");
+		 GridBagConstraints gbc_lblAge_1 = new GridBagConstraints();
+		 gbc_lblAge_1.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblAge_1.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblAge_1.gridx = 0;
+		 gbc_lblAge_1.gridy = 5;
+		 panel_23.add(lblAge_1, gbc_lblAge_1);
+		 
+		 JLabel lblNone_4 = new JLabel("none");
+		 GridBagConstraints gbc_lblNone_4 = new GridBagConstraints();
+		 gbc_lblNone_4.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblNone_4.gridx = 1;
+		 gbc_lblNone_4.gridy = 5;
+		 panel_23.add(lblNone_4, gbc_lblNone_4);
+		 
+		 JLabel lblNationality = new JLabel("NATIONALITY:");
+		 GridBagConstraints gbc_lblNationality = new GridBagConstraints();
+		 gbc_lblNationality.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblNationality.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblNationality.gridx = 0;
+		 gbc_lblNationality.gridy = 6;
+		 panel_23.add(lblNationality, gbc_lblNationality);
+		 
+		 JLabel lblNone_5 = new JLabel("none");
+		 GridBagConstraints gbc_lblNone_5 = new GridBagConstraints();
+		 gbc_lblNone_5.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblNone_5.gridx = 1;
+		 gbc_lblNone_5.gridy = 6;
+		 panel_23.add(lblNone_5, gbc_lblNone_5);
+		 
+		 JLabel lblEmail = new JLabel("E-MAIL:");
+		 GridBagConstraints gbc_lblEmail = new GridBagConstraints();
+		 gbc_lblEmail.insets = new Insets(0, 0, 0, 5);
+		 gbc_lblEmail.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblEmail.gridx = 0;
+		 gbc_lblEmail.gridy = 7;
+		 panel_23.add(lblEmail, gbc_lblEmail);
+		 
+		 JLabel lblNone_6 = new JLabel("none");
+		 GridBagConstraints gbc_lblNone_6 = new GridBagConstraints();
+		 gbc_lblNone_6.insets = new Insets(0, 0, 0, 5);
+		 gbc_lblNone_6.gridx = 1;
+		 gbc_lblNone_6.gridy = 7;
+		 panel_23.add(lblNone_6, gbc_lblNone_6);
+		 
+		 JPanel panel_22 = new JPanel();
+		 panel_5.add(panel_22);
+		 GridBagLayout gbl_panel_22 = new GridBagLayout();
+		 gbl_panel_22.columnWidths = new int[]{102, 0, 0};
+		 gbl_panel_22.rowHeights = new int[]{16, 16, 16, 16, 16, 0};
+		 gbl_panel_22.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		 gbl_panel_22.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		 panel_22.setLayout(gbl_panel_22);
+		 
+		 JLabel lblNewLabel = new JLabel("FINGERPRINT INFO");
+		 GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		 gbc_lblNewLabel.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblNewLabel.gridx = 0;
+		 gbc_lblNewLabel.gridy = 0;
+		 panel_22.add(lblNewLabel, gbc_lblNewLabel);
+		 
+		 JLabel lblTypology = new JLabel("TYPOLOGY:");
+		 GridBagConstraints gbc_lblTypology = new GridBagConstraints();
+		 gbc_lblTypology.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblTypology.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblTypology.gridx = 0;
+		 gbc_lblTypology.gridy = 1;
+		 panel_22.add(lblTypology, gbc_lblTypology);
+		 
+		 JLabel lblNone_7 = new JLabel("none");
+		 GridBagConstraints gbc_lblNone_7 = new GridBagConstraints();
+		 gbc_lblNone_7.insets = new Insets(0, 0, 5, 0);
+		 gbc_lblNone_7.gridx = 1;
+		 gbc_lblNone_7.gridy = 1;
+		 panel_22.add(lblNone_7, gbc_lblNone_7);
+		 
+		 JLabel lblNumberCore = new JLabel("NUMBER CORE:");
+		 GridBagConstraints gbc_lblNumberCore = new GridBagConstraints();
+		 gbc_lblNumberCore.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblNumberCore.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblNumberCore.gridx = 0;
+		 gbc_lblNumberCore.gridy = 2;
+		 panel_22.add(lblNumberCore, gbc_lblNumberCore);
+		 
+		 JLabel lblNone_8 = new JLabel("none");
+		 GridBagConstraints gbc_lblNone_8 = new GridBagConstraints();
+		 gbc_lblNone_8.insets = new Insets(0, 0, 5, 0);
+		 gbc_lblNone_8.gridx = 1;
+		 gbc_lblNone_8.gridy = 2;
+		 panel_22.add(lblNone_8, gbc_lblNone_8);
+		 
+		 JLabel lblTriradiusCore = new JLabel("TRIRADIUS CORE:");
+		 GridBagConstraints gbc_lblTriradiusCore = new GridBagConstraints();
+		 gbc_lblTriradiusCore.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblTriradiusCore.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblTriradiusCore.gridx = 0;
+		 gbc_lblTriradiusCore.gridy = 3;
+		 panel_22.add(lblTriradiusCore, gbc_lblTriradiusCore);
+		 
+		 JLabel lblNone_9 = new JLabel("none");
+		 GridBagConstraints gbc_lblNone_9 = new GridBagConstraints();
+		 gbc_lblNone_9.insets = new Insets(0, 0, 5, 0);
+		 gbc_lblNone_9.gridx = 1;
+		 gbc_lblNone_9.gridy = 3;
+		 panel_22.add(lblNone_9, gbc_lblNone_9);
+		 
+		 JLabel lblRidgeCount = new JLabel("RIDGE COUNT:");
+		 GridBagConstraints gbc_lblRidgeCount = new GridBagConstraints();
+		 gbc_lblRidgeCount.insets = new Insets(0, 0, 0, 5);
+		 gbc_lblRidgeCount.anchor = GridBagConstraints.NORTHWEST;
+		 gbc_lblRidgeCount.gridx = 0;
+		 gbc_lblRidgeCount.gridy = 4;
+		 panel_22.add(lblRidgeCount, gbc_lblRidgeCount);
+		 
+		 JLabel lblNone_10 = new JLabel("none");
+		 GridBagConstraints gbc_lblNone_10 = new GridBagConstraints();
+		 gbc_lblNone_10.gridx = 1;
+		 gbc_lblNone_10.gridy = 4;
+		 panel_22.add(lblNone_10, gbc_lblNone_10);
 
 		 
 		
