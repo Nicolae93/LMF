@@ -1,3 +1,4 @@
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
@@ -16,6 +17,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import com.mysql.fabric.xmlrpc.base.Array;
 import com.sun.glass.events.KeyEvent;
+
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.ActionEvent;
@@ -43,6 +45,7 @@ import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 
 public class JDialogWindow extends JDialog {
+
 	private JTextField txtInsertName;
 	private JTextField txtInsertSurname;
 	private JTextField txtDD;
@@ -65,9 +68,6 @@ public class JDialogWindow extends JDialog {
 	private Path saveDir = Paths.get("/Users/dexter/Documents/LMF/scans/imag.tif");
 	File[] filePathImgToMove;
 	
-	/**
-	 * Create the dialog.
-	 */
 	public JDialogWindow() {
 		setBounds(100, 100, 400, 300);
 
@@ -135,7 +135,7 @@ public class JDialogWindow extends JDialog {
 				lblNationality = new JLabel("Nationality:");
 				panel.add(lblNationality, "cell 0 5,alignx trailing");
 			}
-			{
+			{ // Country list for combobox in Jdialog
 				Vector<String> v = new Vector<String>();
 				Locale[] locales = Locale.getAvailableLocales();
 				for (Locale locale : locales) {
@@ -157,21 +157,27 @@ public class JDialogWindow extends JDialog {
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 
-					// TODO add information into database by filling the
-					// DialogWindow
-
 					// START CHOOSER
 					JFileChooser chooser = new JFileChooser();
 					chooser.setMultiSelectionEnabled(true);
-					//chooser.setCurrentDirectory(new java.io.File("."));
+					chooser.setCurrentDirectory(new java.io.File("."));
 					chooser.setDialogTitle("Select images");
 					chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 					chooser.setAcceptAllFileFilterUsed(false);
 
 					if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-						
-						filePathImgToMove = chooser.getSelectedFiles(); // filePathImgToMove have all the paths selected from chooser
-						
+						System.out.println(0);
+						filePathImgToMove = chooser.getSelectedFiles(); // filePathImgToMove
+																		// have
+																		// all
+																		// the
+																		// paths
+																		// selected
+																		// from
+																		// chooser
+						System.out.println(1);
+						System.out.println("Path selectioned in chooser: " + filePathImgToMove[0]);
+
 					} else {
 						System.out.println("No Selection ");
 					}
@@ -240,63 +246,77 @@ public class JDialogWindow extends JDialog {
 			{
 				JButton saveButton = new JButton("Save");
 				saveButton.setEnabled(true);
-				
+
 				saveButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 
-							System.out.println("bottone premuto");
-							arrayInfoPerson = new String[7];
+						System.out.println("bottone premuto");
+						arrayInfoPerson = new String[6 + filePathImgToMove.length]; //creo un array di dimensioni 6(nome,...,email) + numero di oggetti selezionati nel chooser
+						System.out.println("filePathImgToMove.length: " + filePathImgToMove.length);
+						
+						
+						// condition for insertion
+						if (txtInsertName.getText().trim().equals("") || txtInsertSurname.getText().trim().equals("")
+								|| txtDD.getText().length() != 2 || txtMm.getText().length() != 2
+								|| txtYyyy.getText().length() != 4
+								|| (!rdbtnMale.isSelected() && !rdbtnFemale.isSelected())
+								|| comboBoxNat.getSelectedItem().equals("") || filePathImgToMove == null
+								|| (Integer.parseInt(txtDD.getText()) < 0 || Integer.parseInt(txtDD.getText()) > 31)
+								|| (Integer.parseInt(txtMm.getText()) < 0 || Integer.parseInt(txtMm.getText()) > 12)
+								|| (Integer.parseInt(txtYyyy.getText()) < 0 || Integer
+										.parseInt(txtYyyy.getText()) > Calendar.getInstance().get(Calendar.YEAR))
+								|| filePathImgToMove.length == 0){
 							
-							// TODO incorect input if year is 4346 
-							if (txtInsertName.getText().trim().equals("") || txtInsertSurname.getText().trim().equals("")
-									|| txtDD.getText().length() != 2 || txtMm.getText().length() != 2
-									|| txtYyyy.getText().length() != 4 
-									|| (!rdbtnMale.isSelected() && !rdbtnFemale.isSelected()) || comboBoxNat.getSelectedItem().equals("") 
-									|| filePathImgToMove == null || Integer.parseInt(txtDD.getText()) < 0 && Integer.parseInt(txtDD.getText()) >= 31
-									|| Integer.parseInt(txtMm.getText()) < 0 && Integer.parseInt(txtMm.getText()) >= 12
-									|| Integer.parseInt(txtYyyy.getText()) < 0 && Integer.parseInt(txtMm.getText()) > Calendar.getInstance().get(Calendar.YEAR)) {
-								
-								//Messaggio di errore insersione
-								JOptionPane.showMessageDialog (null, "Missing something", "Incorrect Input", JOptionPane.WARNING_MESSAGE);
-								//Crea un'altro JDialog
-								JDialogWindow dialog = new JDialogWindow();
-								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-								dialog.setVisible(true);
-								//chiudi JDialog
-								dispose(); 
-								
-							} else {
-								arrayInfoPerson[0] = txtInsertName.getText().trim(); // firstname
-								arrayInfoPerson[1] = txtInsertSurname.getText().trim(); // lastname
-								arrayInfoPerson[2] = txtYyyy.getText().trim() + "-" + txtMm.getText().trim() + "-" // bithdate
-										+ txtDD.getText().trim();
-								// M or F
-								if (rdbtnMale.isSelected()) { // sex
-									arrayInfoPerson[3] = "M";
-								} else if (rdbtnFemale.isSelected()) {
-									arrayInfoPerson[3] = "F";
-								}
+							// Error message if insertion is wrong
+							JOptionPane.showMessageDialog(null, "Missing something", "Incorrect Input",
+									JOptionPane.WARNING_MESSAGE);
+							// Crea un'altro JDialog
+							JDialogWindow dialog = new JDialogWindow();
+							dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							dialog.setVisible(true);
+							// chiudi JDialog
+							dispose();
 
-								arrayInfoPerson[4] = (String) comboBoxNat.getSelectedItem(); // nationality
-
-								arrayInfoPerson[5] = txtInsertEmail.getText().trim(); // e-mail
-
-								System.out.println(2);
-								ConnectionDB connection = new ConnectionDB(new InsertRecordDB());
-								try {
-									//connection to database and execute insertion
-									connection.executeStrategy(arrayInfoPerson, filePathImgToMove);
-									
-								} catch (SQLException e1) {
-									e1.printStackTrace();
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								
+						} else {
+							arrayInfoPerson[0] = txtInsertName.getText().trim(); // firstname
+							arrayInfoPerson[1] = txtInsertSurname.getText().trim(); // lastname
+							arrayInfoPerson[2] = txtYyyy.getText().trim() + "-" + txtMm.getText().trim() + "-" // bithdate
+									+ txtDD.getText().trim();
+							// M or F
+							if (rdbtnMale.isSelected()) { // sex
+								arrayInfoPerson[3] = "M";
+							} else if (rdbtnFemale.isSelected()) {
+								arrayInfoPerson[3] = "F";
 							}
 
-							System.out.println(3);
+							arrayInfoPerson[4] = (String) comboBoxNat.getSelectedItem(); // nationality
 
+							arrayInfoPerson[5] = txtInsertEmail.getText().trim(); // e-mail
+							
+							for (int i = 0; i < filePathImgToMove.length; i++) {
+								arrayInfoPerson[6+i] = filePathImgToMove[i].toString(); // aggiungo ad arrayInfoPerson i path(conv in stringhe) delle immagini da muovere 
+								System.out.println("path aggiunti alla fine dell'array arrayInfoPerson, posizione "+i+": "+filePathImgToMove[i].toString());
+							}
+							
+							for (int i = 0; i < arrayInfoPerson.length; i++) {
+								System.out.println("stampa tutti i valori dentro infoPerson: "+arrayInfoPerson[i]);
+							}
+							
+
+							ConnectionDB connection = new ConnectionDB(new InsertRecordDB());
+							try {
+								// connection to database and execute insertion
+								String[] infoPersonAdded = connection.executeStrategy(arrayInfoPerson);
+								dispose();
+								JOptionPane.showMessageDialog (null, "Person '" + infoPersonAdded[0] + "' added successfully", "message", JOptionPane.INFORMATION_MESSAGE);
+
+							} catch (SQLException e1) {
+								e1.printStackTrace();
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+
+						}
 					}
 				});
 
@@ -316,6 +336,7 @@ public class JDialogWindow extends JDialog {
 			}
 		}
 	}
+
 
 	public String[] getArrayInfoPerson() {
 		return arrayInfoPerson;

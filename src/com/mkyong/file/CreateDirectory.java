@@ -5,7 +5,7 @@ import java.io.File;
 public class CreateDirectory {
 	
 	//Method 1
-	public void CreateSingleDirectory(int id) {
+	public void createSingleDirectory(int id) {
 
 		File file = new File("/Users/dexter/Documents/LMF/scans/" + Integer.toString(id));
 		if (!file.exists()) {
@@ -19,7 +19,7 @@ public class CreateDirectory {
 	}
 	
 	//Method 2
-	public void CreateMultipleDirectorys() {
+	public void createMultipleDirectorys() {
 		File files = new File("C:\\Directory2\\Sub2\\Sub-Sub2");
 		if (!files.exists()) {
 			if (files.mkdirs()) {

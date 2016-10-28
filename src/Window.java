@@ -6,6 +6,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -15,7 +16,11 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Vector;
 import javax.swing.JCheckBoxMenuItem;
@@ -74,13 +79,14 @@ import javax.swing.JComboBox;
 
 public class Window {
 
-	private JFrame frmLmf, frmLmf1;
+	private JFrame frmLmf;
 	private JTextField txtId;
 	private JTextField txtInsertAge;
 	private BufferedImage img;
 	private JTextField txtInsertName;
 	private JTextField txtInsertLastname;
 	private JCheckBox chckbxMale, chckbxFemale;
+	private JLabel lblNone, lblNone_1, lblNone_2, lblNone_3, lblNone_4, lblNone_5, lblNone_6, lblNone_11;
 	/**
 	 * Launch the application.
 	 */
@@ -111,30 +117,111 @@ public class Window {
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 
-		JMenuItem mntmNew = new JMenuItem("New");
-		mntmNew.addActionListener(new ActionListener() {
+		JMenuItem mntmQuit = new JMenuItem("Quit");
+		mnFile.add(mntmQuit);
+
+		JMenu mnEdit = new JMenu("Person");
+		menuBar.add(mnEdit);
+		
+		// Delete person
+		JMenuItem mntmDeleteCurrentPerson = new JMenuItem("Delete");
+		mntmDeleteCurrentPerson.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(lblNone_11.getText().trim().equals("none")){
+					JOptionPane.showMessageDialog(frmLmf,
+						    "No person selectioned.");
+					
+				}else{// Yes 0, no 1
+					
+					int n = JOptionPane.showConfirmDialog(
+							frmLmf,
+							"Are you sure to delete current person "+ lblNone_11.getText().trim() +"?",
+							"Delete person",
+							JOptionPane.YES_NO_OPTION);
+					if(n == 0){
+						ConnectionDB connection = new ConnectionDB(new DeletePersonDB());
+						String[] id = new String[1];
+						id[0] = lblNone_11.getText().trim();
+						try {
+							
+							// cancello la persona passandogli l'id
+							String[] infoPerson = connection.executeStrategy(id);	
+							
+							//Person deleted succesfully
+							JOptionPane.showMessageDialog(frmLmf,
+								    "Person " + lblNone_11.getText().trim() +" deleted succesfully");
+							
+							//TODO modificare i none label poi boh vedi tu :D
+//							lblNone, lblNone_1, lblNone_2, lblNone_3, lblNone_4, lblNone_5, lblNone_6, lblNone_11
+							lblNone.setText("none");
+							lblNone_1.setText("none");
+							lblNone_2.setText("none");
+							lblNone_3.setText("none");
+							lblNone_4.setText("none");
+							lblNone_5.setText("none");
+							lblNone_6.setText("none");
+							lblNone_11.setText("none");
+							
+							
+						} catch (SQLException | IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+				
+				
+			}
+		});
+		
+		//Add person
+		JMenuItem mntmDelete_1 = new JMenuItem("Add");
+		mntmDelete_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				try {
 					JDialogWindow dialog = new JDialogWindow();
+					//dialog.getArrayInfoPerson();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
+					
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 				
 			}
 		});
-		mnFile.add(mntmNew);
+		mnEdit.add(mntmDelete_1);
+		mnEdit.addSeparator();
+		
+		//Edit person
+		JMenuItem mntmEdit_1 = new JMenuItem("Edit");
+		mntmEdit_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+			}
+		});
+		mnEdit.add(mntmEdit_1);
+		
+		mnEdit.addSeparator();
+		
+		mnEdit.add(mntmDeleteCurrentPerson);
 
-		JMenuItem mntmQuit = new JMenuItem("Quit");
-		mnFile.add(mntmQuit);
-
-		JMenu mnEdit = new JMenu("Edit");
-		menuBar.add(mnEdit);
-
-		JMenu mnWindow = new JMenu("Window");
+		JMenu mnWindow = new JMenu("Fingerprint");
 		menuBar.add(mnWindow);
+		
+		JMenuItem mntmAdd = new JMenuItem("Add");
+		mnWindow.add(mntmAdd);
+		mnWindow.addSeparator();
+
+		JMenuItem mntmEdit = new JMenuItem("Edit");
+		mnWindow.add(mntmEdit);
+		mnWindow.addSeparator();
+
+		JMenuItem mntmDelete = new JMenuItem("Delete");
+		mnWindow.add(mntmDelete);
 		
 		JMenu mnScans = new JMenu("Scans");
 		menuBar.add(mnScans);
@@ -154,6 +241,40 @@ public class Window {
 		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 
 		JButton btnSearch = new JButton("Search");
+		btnSearch.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				System.out.println("bottone search premuto");
+				
+				//passo l'id per aspettarmi il return di tutte le info della persona, in un array
+				String[] arrayInfoPerson = new String[1];
+				arrayInfoPerson[0] = txtId.getText().trim();
+				
+				//connetto a db e cerco la persona che devo cercare, mi ritorna un array contenente tutte le info su di esso				
+				ConnectionDB connection = new ConnectionDB(new SearchPersonDB());
+				try {
+					String[] infoPerson = connection.executeStrategy(arrayInfoPerson);
+						
+						//scrivo tutto sulle label
+						lblNone_11.setText(infoPerson[0]);
+						lblNone.setText(infoPerson[1]);// nome 
+						lblNone_1.setText(infoPerson[2]);// cognome
+						lblNone_2.setText(infoPerson[3]);// birthday
+						lblNone_3.setText(infoPerson[4]);// sex
+						// lblNone_4.setText();// age
+						lblNone_5.setText(infoPerson[5]);// nat
+						lblNone_6.setText(infoPerson[6]);// email		
+				} catch (SQLException | IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				
+				
+				
+				
+			}
+		});
 		panel_1.add(btnSearch);
 		
 		JLabel lblId = new JLabel("ID:");
@@ -439,27 +560,17 @@ public class Window {
 
 		JButton btnRightpalm = new JButton("Right_Palm");
 		panel_12.add(btnRightpalm);
+		JButton btnL = new JButton("L5");
+		panel_9.add(btnL);
 		
+		// logo uni
 		String URLMU = "/Users/dexter/Documents/workspace/LMF_Project/masarykUniversity.png";
-		
-		
-
-//		 panel_9.add(new LoadImageApp(URLFingerPrint,85,150));
-//		 panel_13.add(new LoadImageApp(URLFingerPrint,85,150));
-//		 panel_14.add(new LoadImageApp(URLFingerPrint,85,150));
-//		 panel_15.add(new LoadImageApp(URLFingerPrint,85,150));
-//		 panel_16.add(new LoadImageApp(URLFingerPrint,85,150));
-//		 panel_17.add(new LoadImageApp(URLFingerPrint,85,150));
-//		 panel_18.add(new LoadImageApp(URLFingerPrint,85,150));
-//		 panel_19.add(new LoadImageApp(URLFingerPrint,85,150));
-//		 panel_20.add(new LoadImageApp(URLFingerPrint,85,150));
-//		 panel_21.add(new LoadImageApp(URLFingerPrint,85,150));
 		 
-		 String URLFingerPrint="/Users/dexter/Documents/workspace/LMF_Project/fingerPrint.jpg";
-		 JButton btnL = new JButton("L5");
-		
-		 panel_9.add(btnL);
-		 //String URLFingerPrint="/Users/dexter/Documents/workspace/LMF_Project/empty.png";
+		// String URLFingerPrint="/Users/dexter/Documents/workspace/LMF_Project/fingerPrint.jpg";
+		 
+		 //empty img
+		 String URLFingerPrint="/Users/dexter/Documents/workspace/LMF_Project/empty.png";
+		 
 		 LoadImageApp loadImageApp = new LoadImageApp(URLFingerPrint,85,100);
 		 panel_9.add(loadImageApp);
 		 panel_13.add(new LoadImageApp(URLFingerPrint,85,100));
@@ -471,6 +582,7 @@ public class Window {
 		 panel_19.add(new LoadImageApp(URLFingerPrint,85,100));
 		 panel_20.add(new LoadImageApp(URLFingerPrint,85,100));
 		 panel_21.add(new LoadImageApp(URLFingerPrint,85,100));
+		
 		 
 		 JPanel panel_5 = new JPanel();
 		 panel_3.add(panel_5, BorderLayout.NORTH);
@@ -498,6 +610,14 @@ public class Window {
 		 gbc_lblInformation.gridy = 0;
 		 panel_23.add(lblInformation, gbc_lblInformation);
 		 
+		 lblNone_11 = new JLabel("none");
+		 lblNone_11.setEnabled(false);
+		 GridBagConstraints gbc_lblNone_11 = new GridBagConstraints();
+		 gbc_lblNone_11.insets = new Insets(0, 0, 5, 5);
+		 gbc_lblNone_11.gridx = 1;
+		 gbc_lblNone_11.gridy = 0;
+		 panel_23.add(lblNone_11, gbc_lblNone_11);
+		 
 		 JLabel lblFirstName = new JLabel("FIRST NAME:");
 		 GridBagConstraints gbc_lblFirstName = new GridBagConstraints();
 		 gbc_lblFirstName.anchor = GridBagConstraints.NORTHWEST;
@@ -506,7 +626,7 @@ public class Window {
 		 gbc_lblFirstName.gridy = 1;
 		 panel_23.add(lblFirstName, gbc_lblFirstName);
 		 
-		 JLabel lblNone = new JLabel("none");
+		 lblNone = new JLabel("none");
 		 GridBagConstraints gbc_lblNone = new GridBagConstraints();
 		 gbc_lblNone.insets = new Insets(0, 0, 5, 5);
 		 gbc_lblNone.gridx = 1;
@@ -521,14 +641,14 @@ public class Window {
 		 gbc_lblLastName.gridy = 2;
 		 panel_23.add(lblLastName, gbc_lblLastName);
 		 
-		 JLabel lblNone_1 = new JLabel("none");
+		 lblNone_1 = new JLabel("none");
 		 GridBagConstraints gbc_lblNone_1 = new GridBagConstraints();
 		 gbc_lblNone_1.insets = new Insets(0, 0, 5, 5);
 		 gbc_lblNone_1.gridx = 1;
 		 gbc_lblNone_1.gridy = 2;
 		 panel_23.add(lblNone_1, gbc_lblNone_1);
 		 
-		 JLabel lblSex_1 = new JLabel("SEX:");
+		 JLabel lblSex_1 = new JLabel("BIRTHDATE:");
 		 GridBagConstraints gbc_lblSex_1 = new GridBagConstraints();
 		 gbc_lblSex_1.anchor = GridBagConstraints.NORTHWEST;
 		 gbc_lblSex_1.insets = new Insets(0, 0, 5, 5);
@@ -536,14 +656,14 @@ public class Window {
 		 gbc_lblSex_1.gridy = 3;
 		 panel_23.add(lblSex_1, gbc_lblSex_1);
 		 
-		 JLabel lblNone_2 = new JLabel("none");
+		 lblNone_2 = new JLabel("none");
 		 GridBagConstraints gbc_lblNone_2 = new GridBagConstraints();
 		 gbc_lblNone_2.insets = new Insets(0, 0, 5, 5);
 		 gbc_lblNone_2.gridx = 1;
 		 gbc_lblNone_2.gridy = 3;
 		 panel_23.add(lblNone_2, gbc_lblNone_2);
 		 
-		 JLabel lblBirthdate = new JLabel("BIRTHDATE:");
+		 JLabel lblBirthdate = new JLabel("SEX:");
 		 GridBagConstraints gbc_lblBirthdate = new GridBagConstraints();
 		 gbc_lblBirthdate.anchor = GridBagConstraints.NORTHWEST;
 		 gbc_lblBirthdate.insets = new Insets(0, 0, 5, 5);
@@ -551,7 +671,7 @@ public class Window {
 		 gbc_lblBirthdate.gridy = 4;
 		 panel_23.add(lblBirthdate, gbc_lblBirthdate);
 		 
-		 JLabel lblNone_3 = new JLabel("none");
+		 lblNone_3 = new JLabel("none");
 		 GridBagConstraints gbc_lblNone_3 = new GridBagConstraints();
 		 gbc_lblNone_3.insets = new Insets(0, 0, 5, 5);
 		 gbc_lblNone_3.gridx = 1;
@@ -566,7 +686,7 @@ public class Window {
 		 gbc_lblAge_1.gridy = 5;
 		 panel_23.add(lblAge_1, gbc_lblAge_1);
 		 
-		 JLabel lblNone_4 = new JLabel("none");
+		 lblNone_4 = new JLabel("none");
 		 GridBagConstraints gbc_lblNone_4 = new GridBagConstraints();
 		 gbc_lblNone_4.insets = new Insets(0, 0, 5, 5);
 		 gbc_lblNone_4.gridx = 1;
@@ -581,7 +701,7 @@ public class Window {
 		 gbc_lblNationality.gridy = 6;
 		 panel_23.add(lblNationality, gbc_lblNationality);
 		 
-		 JLabel lblNone_5 = new JLabel("none");
+		 lblNone_5 = new JLabel("none");
 		 GridBagConstraints gbc_lblNone_5 = new GridBagConstraints();
 		 gbc_lblNone_5.insets = new Insets(0, 0, 5, 5);
 		 gbc_lblNone_5.gridx = 1;
@@ -596,7 +716,7 @@ public class Window {
 		 gbc_lblEmail.gridy = 7;
 		 panel_23.add(lblEmail, gbc_lblEmail);
 		 
-		 JLabel lblNone_6 = new JLabel("none");
+		 lblNone_6 = new JLabel("none");
 		 GridBagConstraints gbc_lblNone_6 = new GridBagConstraints();
 		 gbc_lblNone_6.insets = new Insets(0, 0, 0, 5);
 		 gbc_lblNone_6.gridx = 1;
@@ -682,8 +802,8 @@ public class Window {
 		 
 		
 	}
-	
-	public void createWindow(){
+
+	public void createWindow() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {

@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,27 +12,27 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
+
+import org.apache.commons.io.FilenameUtils;
+
 import com.mkyong.file.CreateDirectory;
 
-public class InsertRecordDB implements Strategy {
+public class InsertRecordDB implements StrategyDB {
 
-	private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
-	private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/LMF?autoReconnect=true&useSSL=false";
-	private static final String DB_USER = "root";
-	private final static String DB_PASSWORD = "Cloudperme9353";
 	private final String insertInfoNewPerson = "INSERT INTO person"
 			+ "(firstname, lastname, birthdate, sex, nationality, email)  VALUES" + "(?,?,?,?,?,?)";
-	
 	private Connection dbConnection = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet rs = null;
 	private CreateDirectory cd;
 	private String scansDir = "/Users/dexter/Documents/LMF/scans";
 
-	public void behaviourWithDB(String[] arrayInfoPerson, File[] filePathImgToMove) throws IOException, SQLException {
-
+	public String[] behaviourWithDB(String[] arrayInfoPerson) throws IOException, SQLException {
+		String[] id1 = new String[1];
+		
 		try {
-
+			// connection to DB
 			dbConnection = getDBConnection();
 			preparedStatement = dbConnection.prepareStatement(insertInfoNewPerson); // Operation
 																				// to
@@ -54,6 +55,7 @@ public class InsertRecordDB implements Strategy {
 
 			// ID new person!
 			int id = getIdNewPerson(rs);
+			id1[0]= Integer.toString(id);
 
 			// salvare le immagini nella cartella, ho l'id e ho anche il path da
 			// dove prendere le immagini
@@ -61,14 +63,14 @@ public class InsertRecordDB implements Strategy {
 			// create a new directory in scans, named like the ID of the new
 			// person
 			cd = new CreateDirectory();
-			cd.CreateSingleDirectory(id);
+			cd.createSingleDirectory(id);
 
 			// move the selectioned images
 			// ho l'ID ho creato la cartella devo solo muovere i file nella
 			// cartella... i file da muovere sono nel filePathImgToMove
 			
 			// move images selectioned by choose in to scaner/id folder :D 
-			copyFile(id, filePathImgToMove);
+			copyFile(id, arrayInfoPerson);
 
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -84,19 +86,20 @@ public class InsertRecordDB implements Strategy {
 			}
 
 		}
+		return id1;
 
 	}
 
-	private void copyFile(int id, File[] filePathImgToMove) {
+	private void copyFile(int id, String[] filePathImgToMove) {
 		InputStream inStream = null;
 		OutputStream outStream = null;
 
-		for (int i = 0; i < filePathImgToMove.length; i++) {
-
+		for (int i = filePathImgToMove.length-1; i >= 6; i--) {
+			int count = 0;
 			try {
-
-				File input = new File(filePathImgToMove[i].getPath());
-				File output = new File(scansDir + "/" + id + "/"+ i + ".tif");
+				System.out.println("filePathImgToMove"+ i + " " + filePathImgToMove[i]);
+				File input = new File(filePathImgToMove[i]);
+				File output = new File(scansDir + "/" + id + "/"+ count + "." + FilenameUtils.getExtension(filePathImgToMove[i]));
 
 				inStream = new FileInputStream(input);
 				outStream = new FileOutputStream(output);
@@ -116,7 +119,8 @@ public class InsertRecordDB implements Strategy {
 
 				// if you want not just to copy but to delete
 				// afile.delete();
-
+				
+				count++;
 				System.out.println("File is copied successful!");
 
 			} catch (IOException e) {
@@ -143,8 +147,8 @@ public class InsertRecordDB implements Strategy {
 	}
 
 	private void prepareRecords(String[] arrayInfoPerson) throws SQLException {
-
-		for (int i = 0; i < arrayInfoPerson.length - 1; i++) {
+		
+		for (int i = 0; i < 6; i++) {
 			preparedStatement.setString(i + 1, arrayInfoPerson[i]);
 		}
 

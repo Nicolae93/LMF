@@ -1,3 +1,4 @@
+
 import java.sql.DriverManager;
 import java.io.File;
 import java.io.IOException;
@@ -8,16 +9,16 @@ import java.sql.SQLException;
 
 public class ConnectionDB {
 
-	private Strategy strategy;
+	private StrategyDB strategy;
 	
-	public ConnectionDB(Strategy strategy) {
+	public ConnectionDB(StrategyDB strategy) {
 
 		this.strategy = strategy;
 	}
 
-	public void executeStrategy(String[] arrayInfoPerson, File[] filePathImgToMove) throws SQLException, IOException {
+	public String[] executeStrategy(String[] arrayInfoPerson) throws SQLException, IOException {
 
-		strategy.behaviourWithDB(arrayInfoPerson, filePathImgToMove);
+		return strategy.behaviourWithDB(arrayInfoPerson);
 
 	}
 
